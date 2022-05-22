@@ -9,6 +9,8 @@ public class UserMeal {
 
     private final int calories;
 
+    private int caloriesDay;
+
     public UserMeal(LocalDateTime dateTime, String description, int calories) {
         this.dateTime = dateTime;
         this.description = description;
@@ -25,5 +27,13 @@ public class UserMeal {
 
     public int getCalories() {
         return calories;
+    }
+
+    public int getCaloriesDay() {
+        return caloriesDay;
+    }
+
+    public void setCaloriesDay(int caloriesDay) {
+        this.caloriesDay = caloriesDay;
     }
 }
