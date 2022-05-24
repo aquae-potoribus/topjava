@@ -8,9 +8,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 public class UserMealsUtil {
@@ -33,47 +32,48 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
-        List<UserMealWithExcess> listMeals = new ArrayList<>();
-
         Map<LocalDate, Integer> caloriesEveryDay = new HashMap<>();
         for (UserMeal userMeal : meals) {
             LocalDate userLocalDate = userMeal.getDateTime().toLocalDate();
-            if (!caloriesEveryDay.containsKey(userLocalDate)) {
-                caloriesEveryDay.put(userLocalDate, userMeal.getCalories());
-            } else {
-                caloriesEveryDay.replace(userLocalDate, caloriesEveryDay.get(userLocalDate) + userMeal.getCalories());
-            }
+            caloriesEveryDay.merge(userLocalDate, userMeal.getCalories(), Integer::sum);
         }
+
+        List<UserMealWithExcess> listMeals = new ArrayList<>();
+        AtomicInteger caloriesDay = new AtomicInteger();
 
         for (UserMeal userMeal : meals) {
-            userMeal.setCaloriesDay(caloriesEveryDay.get(userMeal.getDateTime().toLocalDate()));
-            if ((userMeal.getDateTime().getHour() < endTime.getHour() || userMeal.getDateTime().toLocalTime().equals(startTime)) &&
-                    (userMeal.getDateTime().getHour() > startTime.getHour() || (userMeal.getDateTime().getHour() == startTime.getHour() && userMeal.getDateTime().getMinute() >= startTime.getMinute()))) {
-                listMeals.add(new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), userMeal.getCaloriesDay() > caloriesPerDay));
+            caloriesDay.set(caloriesEveryDay.get(userMeal.getDateTime().toLocalDate()));
+            LocalTime userTime = userMeal.getDateTime().toLocalTime();
+
+            if (userTime.compareTo(startTime) >= 0 && userTime.compareTo(endTime) <= 0) {
+                listMeals.add(new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(),
+                        userMeal.getCalories(), caloriesDay.get() > caloriesPerDay));
             }
         }
-
         return listMeals;
-    }
-
-    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return t -> seen.add(keyExtractor.apply(t));
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
-        List<LocalDate> s = meals.stream().filter(distinctByKey(Meal -> Meal.getDateTime().toLocalDate())).map(userMeal -> userMeal.getDateTime().toLocalDate()).toList();
+        Map<LocalDate, Integer> caloriesEveryDay = new HashMap<>();
+        meals.stream()
+                .peek(userMeal -> caloriesEveryDay.merge(userMeal.getDateTime().toLocalDate(),
+                        userMeal.getCalories(), Integer::sum))
+                .collect(Collectors.toList());
+        AtomicInteger caloriesDay = new AtomicInteger();
+        return meals.stream()
+                .map(userMeal -> {
 
-        for (int i = 0; i < s.size(); i++) {
-            int finalI = i;
-            int caloriesDay = meals.stream().filter(a -> a.getDateTime().toLocalDate().equals(s.get(finalI))).mapToInt(UserMeal::getCalories).sum();
-            List<UserMeal> empty = meals.stream().filter(a -> a.getDateTime().toLocalDate().equals(s.get(finalI))).peek(k -> k.setCaloriesDay(caloriesDay)).toList();
-        }
+                    caloriesDay.set(caloriesEveryDay.get(userMeal.getDateTime().toLocalDate()));
+                    LocalTime userTime = userMeal.getDateTime().toLocalTime();
 
-        return meals.stream().filter(userMeal ->
-                ((userMeal.getDateTime().getHour() < endTime.getHour() || userMeal.getDateTime().toLocalTime().equals(startTime)) &&
-                        (userMeal.getDateTime().getHour() > startTime.getHour() || (userMeal.getDateTime().getHour() == startTime.getHour() && userMeal.getDateTime().getMinute() >= startTime.getMinute())))
-        ).map(userMeal -> new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), userMeal.getCaloriesDay() > caloriesPerDay)).toList();
+                    if (userTime.compareTo(startTime) >= 0 && userTime.compareTo(endTime) <= 0) {
+                        return new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(),
+                                caloriesDay.get() > caloriesPerDay);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }
