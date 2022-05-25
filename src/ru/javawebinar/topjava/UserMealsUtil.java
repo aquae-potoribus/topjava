@@ -1,4 +1,4 @@
-package main.java.ru.javawebinar.topjava.util;
+package ru.javawebinar.topjava;
 
 import main.java.ru.javawebinar.topjava.model.UserMeal;
 import main.java.ru.javawebinar.topjava.model.UserMealWithExcess;
@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
