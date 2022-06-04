@@ -2,18 +2,11 @@
 <%@ page import="java.util.*, java.text.*" %>
 <%@ page import="ru.javawebinar.topjava.model.MealTo" %>
 
-<%!
-    String getFormattedDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-        return sdf.format(new Date());
-    }
-%>
 <html lang="ru">
 <style>
     table, th, td {
         border: 1px solid black;
     }
-
     td {
         text-align: center;
     }
@@ -25,8 +18,6 @@
 <h3><a href="index.html">my new page</a></h3>
 <hr>
 
-<i>моё имя ${name}Сегодня <%= getFormattedDate() %>
-</i>
 <table style="width:100%">
     <tr>
         <th>Date</th>
@@ -45,14 +36,12 @@
         </td>
         <td style="color: <%= color %>;"><%= meal.getCalories() %>
         </td>
-        <td><a><%= "Update" %>
+        <td><a href="editMeal.jsp?mealId=1"><%= "Update" %>
         </a></td>
-        <td><a><%= "Delete" %>
+        <td><a data-method="delete" href="meals.jsp?mealId=1"><%= "Delete" %>
         </a></td>
     </tr>
     <% } %>
-
-
 </table>
 
 </body>

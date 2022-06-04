@@ -38,7 +38,6 @@ public class MealServlet extends HttpServlet {
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         ), LocalTime.of(0, 0), LocalTime.of(23, 59), 2005);
 
-        request.setAttribute("name", "sergey");
         request.setAttribute("list", list);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("meals.jsp");
         requestDispatcher.forward(request, response);
