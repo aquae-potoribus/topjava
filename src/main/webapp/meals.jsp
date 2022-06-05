@@ -1,7 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.util.*, java.text.*" %>
-<%@ page import="ru.javawebinar.topjava.model.MealTo" %>
-
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <html lang="ru">
 <style>
     table, th, td {
@@ -17,7 +16,6 @@
 <body>
 <h3><a href="index.html">my new page</a></h3>
 <hr>
-
 <table style="width:100%">
     <tr>
         <th>Date</th>
@@ -26,22 +24,21 @@
         <th></th>
         <th></th>
     </tr>
-    <% List<MealTo> meals = (List<MealTo>) request.getAttribute("list");
-        for (MealTo meal : meals) {
-            String color = meal.isExcess() ? "red" : "green";%>
-    <tr>
-        <td style="color: <%= color %>;"><%= meal.getDateTime() %>
-        </td>
-        <td style="color: <%= color %>;"><%= meal.getDescription() %>
-        </td>
-        <td style="color: <%= color %>;"><%= meal.getCalories() %>
-        </td>
-        <td><a href="editMeal.jsp?mealId=1"><%= "Update" %>
-        </a></td>
-        <td><a data-method="delete" href="meals.jsp?mealId=1"><%= "Delete" %>
-        </a></td>
-    </tr>
-    <% } %>
+    <c:forEach var="user" items="${list}">
+        <tr style="color: ${user.excess ? 'red' :'green'}">
+            <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(user.getDateTime())}
+            </td>
+            <td>${user.description}
+            </td>
+            <td >${user.calories}
+            </td>
+            <td><a href="index.html"><%= "Update" %>
+            </a></td>
+            <td><a href="index.html"><%= "Delete" %>
+            </a></td>
+        </tr>
+        <p></p>
+    </c:forEach>
 </table>
 
 </body>
