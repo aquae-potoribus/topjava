@@ -20,7 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    final int CALORIES_PER_DAY = 2000;
+    static final int CALORIES_PER_DAY = 2000;
     List<Meal> listMeals = Arrays.asList(
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
@@ -34,9 +34,8 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
-        List<MealTo> list = MealsUtil.filteredByStreams(listMeals, LocalTime.of(0, 0), LocalTime.MAX, CALORIES_PER_DAY);
-        request.setAttribute("name", "sergey");
-        request.setAttribute("list", list);
+        List<MealTo> listMealTo = MealsUtil.filteredByStreams(listMeals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
+        request.setAttribute("listMealTo", listMealTo);
         getServletContext().getRequestDispatcher("/meals.jsp").forward(request, response);
     }
 }

@@ -24,7 +24,7 @@ public class MealsUtil {
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        List<MealTo> mealsTo = filteredByStreams(meals,  LocalTime.of(0, 0), LocalTime.of(23, 59), 2005);
+        List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), 2005);
         mealsTo.forEach(System.out::println);
     }
 

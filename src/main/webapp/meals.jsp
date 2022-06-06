@@ -14,7 +14,7 @@
     <title>meals</title>
 </head>
 <body>
-<h3><a href="index.html">my new page</a></h3>
+<h3><a href="index.html">Home</a></h3>
 <hr>
 <table style="width:100%">
     <tr>
@@ -24,17 +24,17 @@
         <th></th>
         <th></th>
     </tr>
-    <c:forEach var="user" items="${list}">
-        <tr style="color: ${user.excess ? 'red' :'green'}">
-            <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(user.getDateTime())}
+    <c:forEach var="meal" items="${listMealTo}">
+        <tr style="color: ${meal.excess ? 'red' :'green'}">
+            <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(meal.getDateTime())}
             </td>
-            <td>${user.description}
+            <td>${meal.description}
             </td>
-            <td >${user.calories}
+            <td >${meal.calories}
             </td>
-            <td><a href="index.html"><%= "Update" %>
+            <td><a href="index.html">Update
             </a></td>
-            <td><a href="index.html"><%= "Delete" %>
+            <td><a href="index.html">Delete
             </a></td>
         </tr>
         <p></p>
