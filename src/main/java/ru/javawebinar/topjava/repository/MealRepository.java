@@ -1,10 +1,11 @@
 package ru.javawebinar.topjava.repository;
 
+import org.springframework.stereotype.Component;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.util.Collection;
 
-// TODO add userId
+@Component
 public interface MealRepository {
     // null if updated meal does not belong to userId
     Meal save(Meal meal);
