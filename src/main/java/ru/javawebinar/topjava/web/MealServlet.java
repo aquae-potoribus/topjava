@@ -18,23 +18,18 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MealServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+    public static final Logger log = LoggerFactory.getLogger(MealServlet.class);
     ConfigurableApplicationContext appCtx;
     MealRestController mealRestController;
 
-    private MealRepository repository;
+    public MealRepository repository;
 
     @Override
     public void init() {
-        try {
-            appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-            mealRestController = appCtx.getBean(MealRestController.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        mealRestController = appCtx.getBean(MealRestController.class);
         repository = new InMemoryMealRepository();
     }
 
@@ -76,7 +71,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(mealRestController.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTos(repository.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay()));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
