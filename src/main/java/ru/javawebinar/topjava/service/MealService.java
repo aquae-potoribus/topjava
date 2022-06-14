@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +17,16 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) {
-        return mealRepository.save(meal, userId);
+        return ValidationUtil.checkNotFoundWithId(mealRepository.save(meal, userId), userId);
     }
 
     public void delete(int id, int userId) {
-        mealRepository.delete(id, userId);
+        ValidationUtil.checkNotFoundWithId(mealRepository.delete(id, userId), id);
     }
 
     public Meal get(int id, int userId) {
-        return mealRepository.get(id, userId);
+        return ValidationUtil.checkNotFoundWithId(mealRepository.get(id, userId), id);
+
     }
 
     public List<Meal> getAll(int userId) {

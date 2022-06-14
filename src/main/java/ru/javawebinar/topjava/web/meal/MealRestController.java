@@ -27,12 +27,17 @@ public class MealRestController {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    public List<MealTo> getAll(LocalDate fromDate, LocalTime fromTime, LocalDate untilDate, LocalTime untilTime) {
+    public List<MealTo> getUserMeals(LocalDate fromDate, LocalTime fromTime, LocalDate untilDate, LocalTime untilTime) {
         log.info("getAll");
         return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay())
                 .stream()
-                .filter((x) -> x.getDateTime().isAfter(LocalDateTime.of(fromDate, fromTime)) && x.getDateTime().isBefore(LocalDateTime.of(untilDate, untilTime)))
+                .filter((mealTo) -> mealTo.getDateTime().isAfter(LocalDateTime.of(fromDate, fromTime)) && mealTo.getDateTime().isBefore(LocalDateTime.of(untilDate, untilTime)))
                 .collect(Collectors.toList());
+    }
+
+    public List<Meal> getAll() {
+        log.info("getAll");
+        return service.getAll(SecurityUtil.authUserId());
     }
 
     public Meal get(int id) {

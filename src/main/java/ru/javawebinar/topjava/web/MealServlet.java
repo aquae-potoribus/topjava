@@ -20,17 +20,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
-    public static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
     ConfigurableApplicationContext appCtx;
     MealRestController mealRestController;
-
-    public MealRepository repository;
 
     @Override
     public void init() {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = appCtx.getBean(MealRestController.class);
-        repository = new InMemoryMealRepository();
     }
 
     @Override
@@ -71,7 +68,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(repository.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay()));
+                        MealsUtil.getTos(mealRestController.getAll(), SecurityUtil.authUserCaloriesPerDay()));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

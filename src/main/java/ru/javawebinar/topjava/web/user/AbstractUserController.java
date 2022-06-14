@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public abstract class AbstractUserController {
     public User create(User user) {
         log.info("create {}", user);
         checkNew(user);
-        return service.create(user);
+        return service.create(user, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
@@ -41,7 +42,7 @@ public abstract class AbstractUserController {
     public void update(User user, int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
-        service.update(user);
+        service.update(user, SecurityUtil.authUserId());
     }
 
     public User getByMail(String email) {

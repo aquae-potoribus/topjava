@@ -1,9 +1,8 @@
 package ru.javawebinar.topjava.repository;
 
-import org.springframework.stereotype.Component;
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface MealRepository {
     // null if updated meal does not belong to userId
@@ -17,5 +16,5 @@ public interface MealRepository {
     Meal get(int id, Integer userId);
 
     // ORDERED dateTime desc
-    Collection<Meal> getAll(Integer userId);
+    List<Meal> getAll(Integer userId);
 }
