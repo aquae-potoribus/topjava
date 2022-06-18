@@ -9,10 +9,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
@@ -67,11 +67,11 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return null;
+        return jdbcTemplate.query("SELECT * FROM meals ORDER BY date_time", ROW_MAPPER);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals ORDER BY date_time", ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE date_time > '"+ startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) +"' AND date_time < '"+ endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) +"'::timestamp ORDER BY date_time", ROW_MAPPER);
     }
 }

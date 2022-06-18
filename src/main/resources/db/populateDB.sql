@@ -17,4 +17,6 @@ VALUES ('USER', 100000),
 
 INSERT INTO meals (date_time,user_id, description, calories)
 VALUES (now(),100000, 'завтрак', 500),
-       (current_date,100001, 'обед', 900);
+       (current_date,100001, 'обед', 900),
+       (to_timestamp(200120400),100001, 'обед', 900),
+       (to_timestamp(200120401),100001, 'обед', 900);
