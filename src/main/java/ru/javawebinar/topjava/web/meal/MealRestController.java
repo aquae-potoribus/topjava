@@ -67,6 +67,15 @@ public class MealRestController {
      */
     public List<MealTo> getBetween(@Nullable LocalDate startDate, @Nullable LocalTime startTime,
                                    @Nullable LocalDate endDate, @Nullable LocalTime endTime) {
+        if(endTime == null){
+            endTime = LocalTime.MAX;
+        }
+        if(startTime == null){
+            startTime = LocalTime.MIN;
+        }
+        if(endDate == null){
+            endDate = LocalDate.of(3000,12,30);
+        }
         int userId = SecurityUtil.authUserId();
         log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
 

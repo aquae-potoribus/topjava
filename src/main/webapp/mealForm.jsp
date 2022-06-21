@@ -1,3 +1,4 @@
+<%@ page import="java.time.format.DateTimeFormatter" %><%--@elvariable id="DateTimeFormatter" type="java.time.format.DateTimeFormatter"--%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -16,7 +17,7 @@
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt>DateTime:</dt>
-            <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime" required></dd>
+            <dd><input type="datetime-local" value="<%=  meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm"))  %>" name="dateTime" required></dd>
         </dl>
         <dl>
             <dt>Description:</dt>

@@ -26,6 +26,8 @@ public class JdbcMealRepository implements MealRepository {
 
     private final SimpleJdbcInsert insertMeal;
 
+    final DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @Autowired
     public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
@@ -38,17 +40,19 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
+        String role = userId == 100001 ? "admin" : "user";
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", meal.getId())
-                .addValue("datetime", meal.getDateTime())
-                .addValue("calories", meal.getCalories())
-                .addValue("description", meal.getDescription());
+                .addValue("user_id", userId)
+                .addValue("date_time", meal.getDateTime())
+                .addValue("calories", meal.getCalories());
 
         if (meal.isNew()) {
+            map.addValue("description", role + ": " + meal.getDescription());
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET date_time=:datetime, description=:description, calories=:calories WHERE id=:id", map) == 0) {
+                "UPDATE meals SET date_time='" + meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")) +
+                        "', description='" + meal.getDescription() +"', calories=:calories WHERE id=" + meal.getId(), map) == 0) {
             return null;
         }
         return meal;
@@ -56,22 +60,30 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("DELETE FROM meals WHERE id=?", id) != 0;
+        if (userId == jdbcTemplate.queryForObject("SELECT user_id FROM meals WHERE id=?", Integer.class, new Object[]{id})) {
+            return jdbcTemplate.update("DELETE FROM meals WHERE id=?", id) != 0;
+        }
+        throw new RuntimeException();
     }
 
     @Override
     public Meal get(int id, int userId) {
         List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=?", ROW_MAPPER, id);
-        return DataAccessUtils.singleResult(meals);
+        if (userId == jdbcTemplate.queryForObject("SELECT user_id FROM meals WHERE id=?", Integer.class, new Object[]{id})) {
+            return DataAccessUtils.singleResult(meals);
+        }
+        throw new RuntimeException();
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals ORDER BY date_time", ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id = " + userId + " ORDER BY date_time DESC", ROW_MAPPER);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE date_time > '"+ startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) +"' AND date_time < '"+ endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) +"'::timestamp ORDER BY date_time", ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE date_time > '" +
+                startDateTime.format(DATETIMEFORMATTER) + "' AND date_time < '" + endDateTime.format(DATETIMEFORMATTER) +
+                "' ORDER BY date_time DESC", ROW_MAPPER);
     }
 }

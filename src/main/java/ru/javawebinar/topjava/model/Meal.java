@@ -13,7 +13,6 @@ public class Meal extends AbstractBaseEntity {
 
     private int calories;
 
-    @Autowired
     public Meal() {
     }
 
