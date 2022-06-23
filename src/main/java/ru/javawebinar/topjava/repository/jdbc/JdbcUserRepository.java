@@ -58,7 +58,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public boolean delete(int id) {
-        return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
+        return jdbcTemplate.update("DELETE FROM users WHERE id=?; DELETE FROM meals WHERE user_id=?", id) != 0;
     }
 
     @Override

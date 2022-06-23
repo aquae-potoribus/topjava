@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,19 +42,26 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
         String role = userId == 100001 ? "admin" : "user";
+
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("user_id", userId)
                 .addValue("date_time", meal.getDateTime())
-                .addValue("calories", meal.getCalories());
+                .addValue("calories", meal.getCalories())
+                .addValue("description", meal.getDescription());
+
 
         if (meal.isNew()) {
-            map.addValue("description", role + ": " + meal.getDescription());
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET date_time='" + meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")) +
-                        "', description='" + meal.getDescription() +"', calories=:calories WHERE id=" + meal.getId(), map) == 0) {
-            return null;
+        } else {
+            if (userId != jdbcTemplate.queryForObject("SELECT user_id FROM meals WHERE id=" + meal.getId(), Integer.class, new Object[]{})) {
+                return null;
+            }
+            if (namedParameterJdbcTemplate.update(
+                    "UPDATE meals SET date_time='" + meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")) +
+                            "', description='" + meal.getDescription() + "', calories=:calories WHERE id=" + meal.getId(), map) == 0) {
+                return null;
+            }
         }
         return meal;
     }
@@ -63,7 +71,7 @@ public class JdbcMealRepository implements MealRepository {
         if (userId == jdbcTemplate.queryForObject("SELECT user_id FROM meals WHERE id=?", Integer.class, new Object[]{id})) {
             return jdbcTemplate.update("DELETE FROM meals WHERE id=?", id) != 0;
         }
-        throw new RuntimeException();
+        throw new NotFoundException("not found id " + id);
     }
 
     @Override
@@ -72,7 +80,7 @@ public class JdbcMealRepository implements MealRepository {
         if (userId == jdbcTemplate.queryForObject("SELECT user_id FROM meals WHERE id=?", Integer.class, new Object[]{id})) {
             return DataAccessUtils.singleResult(meals);
         }
-        throw new RuntimeException();
+        throw new NotFoundException("not found id " + id);
     }
 
     @Override
