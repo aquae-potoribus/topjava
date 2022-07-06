@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,9 +17,9 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 @Service
 public class MealService {
 
-    private final MealRepository repository;
+    private final DataJpaMealRepository repository;
 
-    public MealService(MealRepository repository) {
+    public MealService(DataJpaMealRepository repository) {
         this.repository = repository;
     }
 
