@@ -4,6 +4,8 @@
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <html>
 <head>
+    <jsp:include page="fragments/bodyHeader.jsp"/>
+
     <title>Meals</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -61,6 +63,8 @@
             </tr>
         </c:forEach>
     </table>
+    <jsp:include page="fragments/footer.jsp"/>
+
 </section>
 </body>
 </html>
