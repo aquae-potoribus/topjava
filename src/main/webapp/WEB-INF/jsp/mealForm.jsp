@@ -3,7 +3,6 @@
 
 <html>
 <head>
-    <jsp:include page="fragments/bodyHeader.jsp"/>
     <title>Meal</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -30,7 +29,6 @@
         <button type="submit">Save</button>
         <button onclick="window.history.back()" type="button">Cancel</button>
     </form>
-    <jsp:include page="fragments/footer.jsp"/>
 </section>
 </body>
 </html>
