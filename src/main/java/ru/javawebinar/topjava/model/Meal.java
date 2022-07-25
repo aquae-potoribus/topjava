@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
@@ -29,19 +30,23 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE = "Meal.delete";
     public static final String GET_BETWEEN = "Meal.getBetween";
 
+    @JsonProperty("dateTime")
     @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
 
+    @JsonProperty("description")
     @Column(name = "description", nullable = false)
     @NotBlank
     @Size(min = 2, max = 120)
     private String description;
 
+    @JsonProperty("calories")
     @Column(name = "calories", nullable = false)
     @Range(min = 10, max = 5000)
     private int calories;
 
+    @JsonProperty("user")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -62,32 +67,25 @@ public class Meal extends AbstractBaseEntity {
         this.calories = calories;
     }
 
+
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
-    public LocalDate getDate() {
-        return dateTime.toLocalDate();
-    }
-
-    public LocalTime getTime() {
-        return dateTime.toLocalTime();
     }
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getCalories() {
+        return calories;
     }
 
     public void setCalories(int calories) {
@@ -100,6 +98,13 @@ public class Meal extends AbstractBaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
     }
 
     @Override

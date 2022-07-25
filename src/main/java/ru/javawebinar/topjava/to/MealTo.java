@@ -1,27 +1,36 @@
 package ru.javawebinar.topjava.to;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
-
 public class MealTo {
+
+    @JsonProperty("id")
     private final Integer id;
 
+    @JsonProperty("dateTime")
     private final LocalDateTime dateTime;
 
+    @JsonProperty("description")
     private final String description;
 
+    @JsonProperty("calories")
     private final int calories;
-    @JsonIgnore
+
+    @JsonProperty("excess")
     private final boolean excess;
 
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+    @JsonCreator
+    public MealTo(@JsonProperty("id") Integer id,@JsonProperty("dateTime") LocalDateTime dateTime,
+                  @JsonProperty("description") String description,@JsonProperty("calories") int calories,@JsonProperty("excess") boolean excess) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
     }
+
 
     public Integer getId() {
         return id;

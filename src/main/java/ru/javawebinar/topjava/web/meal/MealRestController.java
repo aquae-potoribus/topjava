@@ -11,14 +11,13 @@ import ru.javawebinar.topjava.to.MealTo;
 
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
 
-    static final String REST_URL = "/rest/admin/meals";
+    static final String REST_URL = "/rest/meals";
 
     @Override
     @GetMapping
@@ -55,14 +54,11 @@ public class MealRestController extends AbstractMealController {
         super.update(meal, id);
     }
 
-    @GetMapping("/between/{startDateTimeString}/{endDateTimeString}")
-    public List<MealTo> getBetween(@PathVariable String startDateTimeString,
-                                   @PathVariable String endDateTimeString) {
-        LocalDateTime startDateTime = LocalDateTime.parse(startDateTimeString);
-        LocalDateTime endDateTime = LocalDateTime.parse(endDateTimeString);
+    @GetMapping("/between")
+    public List<MealTo> getBetween(@RequestParam("startDateTimeString")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
+                                   @RequestParam("endDateTimeString")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
 
         return super.getBetween(startDateTime.toLocalDate(), startDateTime.toLocalTime(),
                 endDateTime.toLocalDate(), endDateTime.toLocalTime());
     }
-
 }
