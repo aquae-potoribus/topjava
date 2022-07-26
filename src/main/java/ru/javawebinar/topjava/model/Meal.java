@@ -30,23 +30,19 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE = "Meal.delete";
     public static final String GET_BETWEEN = "Meal.getBetween";
 
-    @JsonProperty("dateTime")
     @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
 
-    @JsonProperty("description")
     @Column(name = "description", nullable = false)
     @NotBlank
     @Size(min = 2, max = 120)
     private String description;
 
-    @JsonProperty("calories")
     @Column(name = "calories", nullable = false)
     @Range(min = 10, max = 5000)
     private int calories;
 
-    @JsonProperty("user")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

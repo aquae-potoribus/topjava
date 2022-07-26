@@ -4,26 +4,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
+
+
 public class MealTo {
 
-    @JsonProperty("id")
     private final Integer id;
 
-    @JsonProperty("dateTime")
     private final LocalDateTime dateTime;
 
-    @JsonProperty("description")
     private final String description;
 
-    @JsonProperty("calories")
     private final int calories;
 
-    @JsonProperty("excess")
     private final boolean excess;
 
     @JsonCreator
-    public MealTo(@JsonProperty("id") Integer id,@JsonProperty("dateTime") LocalDateTime dateTime,
-                  @JsonProperty("description") String description,@JsonProperty("calories") int calories,@JsonProperty("excess") boolean excess) {
+    public MealTo(@JsonProperty("id") Integer id, @JsonProperty("dateTime") LocalDateTime dateTime, @JsonProperty("description") String description, @JsonProperty("calories") int calories, @JsonProperty("excess") boolean excess) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
@@ -54,12 +50,13 @@ public class MealTo {
 
     @Override
     public String toString() {
-        return "MealTo{" +
-                "id=" + id +
-                ", dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", excess=" + excess +
-                '}';
+        return "MealTo{" + "id=" + id + ", dateTime=" + dateTime + ", description='" + description + '\'' + ", calories=" + calories + ", excess=" + excess + '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        MealTo newMealTo = (MealTo) obj;
+        return newMealTo.excess == this.excess && newMealTo.calories == this.calories && newMealTo.id.equals(this.id) && newMealTo.description.equals(this.description) && newMealTo.dateTime.equals(this.dateTime);
+
     }
 }

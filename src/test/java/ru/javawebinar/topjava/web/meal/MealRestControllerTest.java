@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,7 +62,6 @@ class MealRestControllerTest extends AbstractControllerTest {
         newMeal.setId(newId);
         MEAL_MATCHER.assertMatch(created, newMeal);
         MEAL_MATCHER.assertMatch(mealService.get(newId, USER_ID), newMeal);
-
     }
 
     @Test
@@ -85,11 +85,13 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-
-        perform(MockMvcRequestBuilders.get(REST_URL + "between?startDateTimeString=2020-01-30T12:00:00.000-05:00&endDateTimeString=2020-01-31T18:00:00.000-05:00"))
+        LocalDateTime startDateTime = LocalDateTime.of(2020, 1, 30, 12, 0, 0);
+        LocalDateTime endDateTime = LocalDateTime.of(2020, 1, 31, 18, 0, 0);
+        perform(MockMvcRequestBuilders.get(REST_URL + "between")
+                    .param("startDateTime", String.valueOf(startDateTime))
+                    .param("endDateTime", String.valueOf(endDateTime)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(Arrays.asList(createTo(meal6,true), createTo(meal2,false))));
-
+                .andExpect(MEAL_TO_MATCHER.contentJson(Arrays.asList(createTo(meal6, true), createTo(meal2, false))));
     }
 }
