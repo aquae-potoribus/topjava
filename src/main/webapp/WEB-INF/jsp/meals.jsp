@@ -32,42 +32,13 @@
         </dl>
         <button type="submit"><spring:message code="meal.filter"/></button>
     </form>
-    <hr>
-    <a href="meals/create"><spring:message code="meal.add"/></a>
-    <button class="btn btn-primary" onclick="add()">
-        <span class="fa fa-plus"></span>
-        <spring:message code="common.add"/>
-    </button>
-    <hr>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-        <tr>
-            <th><spring:message code="meal.dateTime"/></th>
-            <th><spring:message code="meal.description"/></th>
-            <th><spring:message code="meal.calories"/></th>
-            <th></th>
-            <th></th>
-        </tr>
-        </thead>
-        <c:forEach items="${requestScope.meals}" var="meal1">
-            <jsp:useBean id="meal1" type="ru.javawebinar.topjava.to.MealTo"/>
-            <tr data-meal-excess="${meal1.excess}">
-                <td>
-                        <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                        <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
-                        <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
-                        ${fn:formatDateTime(meal1.dateTime)}
-                </td>
-                <td>${meal1.description}</td>
-                <td>${meal1.calories}</td>
-                <td><a href="meals/update?id=${meal1.id}"><spring:message code="common.update"/></a></td>
-                <td><a href="meals/delete?id=${meal1.id}"><spring:message code="common.delete"/></a></td>
-            </tr>
-        </c:forEach>
-    </table>
-
 </section>
 
+<button class="btn btn-primary" onclick="add()">
+    <span class="fa fa-plus"></span>
+    <spring:message code="common.add"/>
+</button>
+<hr>
 <table class="table table-striped" id="datatable">
     <thead>
     <tr>
