@@ -51,7 +51,7 @@
     </thead>
     <c:forEach items="${requestScope.meals}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-        <tr id="${meal.id}">
+        <tr data-meal-excess="${meal.excess}" id="${meal.id}">
             <fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm"
                            var="parsedDateTime" type="date" />
             <td><fmt:formatDate value="${parsedDateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
@@ -73,6 +73,12 @@
             <div class="modal-body">
                 <form id="detailsForm">
                     <input type="hidden" id="id" name="id">
+
+                    <div class="form-group">
+                        <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
+                        <input type="text" class="form-control" id="dateTime" name="dateTime"
+                               placeholder="<spring:message code="meal.dateTime"/>">
+                    </div>
 
                     <div class="form-group">
                         <label for="description" class="col-form-label"><spring:message code="meal.description"/></label>
