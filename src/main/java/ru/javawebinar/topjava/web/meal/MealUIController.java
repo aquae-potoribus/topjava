@@ -44,7 +44,7 @@ public class MealUIController extends AbstractMealController {
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void create(@Valid MealTo mealTo, BindingResult result) {
-        if(mealTo.getId() == 0){
+        if(mealTo.getId() == null || mealTo.getId() == 0){
         super.create(MealsUtil.createNewFromTo(mealTo));
         } else {
             super.update(MealsUtil.createNewFromTo(mealTo), mealTo.getId());
