@@ -32,9 +32,11 @@ $(function () {
             "columns": [
                 {
                     "data": "dateTime",
-                    "render": function (data) {
-                        var date = new Date(data);
-                        return date.getFullYear() + (date.getMonth() + 1) + "/" + date.getDate() + "/" + +" " + date.getHours() + ":" + date.getMinutes();
+                    "render": function (date, type, row) {
+                        if (type === "display") {
+                            return date.substring(0, 10) + " " + date.substring(12, 16);
+                        }
+                        return date;
                     }
                 },
                 {
