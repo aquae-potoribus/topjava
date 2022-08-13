@@ -37,6 +37,8 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
+
+
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 
