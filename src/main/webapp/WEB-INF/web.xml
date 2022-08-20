@@ -8,7 +8,7 @@
 
     <context-param>
         <param-name>spring.profiles.default</param-name>
-        <param-value>postgres,datajpa</param-value>
+        <param-value>hsqldb,datajpa</param-value>
     </context-param>
 
     <context-param>
